@@ -1,14 +1,18 @@
-# NewsWhat - AI News Summarizer
+# NewsWhat - Funny AI News Translator
 
-A Flask web application that automatically crawls news articles from sources like CNN, and uses the Claude 3.7 Sonnet model via g4f to generate summaries and analysis on demand.
+A Flask web application that automatically crawls news articles from sources like CNN, and uses AI models via g4f to generate humorous translations, summaries, and analysis on demand.
 
 ## Features
 
 - Web scraping of CNN headlines and article content
-- On-demand AI-powered summarization and analysis using Claude 3.7 Sonnet
-- Topic categorization and sentiment analysis
-- Key entity extraction
-- Clean, responsive UI for browsing news and viewing detailed analyses
+- On-demand AI-powered processing with multiple features:
+  - Humorous, simplified translations of complex news
+  - Concise summaries of articles
+  - Topic categorization and sentiment analysis
+  - Key entity extraction
+  - Core points highlighted with markdown formatting
+- Responsive UI for browsing news and viewing detailed analyses
+- Debug page to monitor AI service status
 
 ## How It Works
 
@@ -16,7 +20,8 @@ A Flask web application that automatically crawls news articles from sources lik
 2. When a user clicks on an article, the application:
    - Extracts the full article content
    - Sends it to available AI models for analysis
-   - Displays a detailed view with summary, topic, sentiment, and key entities
+   - Displays a detailed view with the funny translation, summary, and other analysis
+3. The app attempts to use various AI models through g4f, with automatic fallbacks
 
 ## Installation
 
@@ -35,6 +40,11 @@ A Flask web application that automatically crawls news articles from sources lik
 2. Open your browser and navigate to `http://127.0.0.1:5000`
 3. Click "Crawl Latest News" to fetch current headlines
 4. Click on any article card to view or generate its AI analysis
+5. Visit the Debug page to see information about available AI services
+
+## Data Storage
+
+The application stores crawled articles and their AI-generated content in a local `articles.json` file. This serves as a simple database and persists between application restarts.
 
 ## Note on Web Scraping
 
@@ -45,9 +55,16 @@ This application performs web scraping on CNN's website. Please note that CNN's 
 - Flask - Web framework
 - Requests - HTTP requests
 - BeautifulSoup4 - HTML parsing
-- g4f - API for accessing Claude 3.7 Sonnet
-- Python-dateutil - Date parsing utilities
+- g4f - API for accessing various AI models
+- Marked.js - For rendering markdown in the browser
 
 ## Disclaimer
 
-This application is for educational purposes only. Always respect the terms of service of websites you interact with. The use of Claude 3.7 Sonnet through g4f may be subject to specific terms and conditions. 
+This application is for educational purposes only. Always respect the terms of service of websites you interact with.
+
+The g4f library provides unofficial access to AI models and may have limitations:
+- Service availability may be inconsistent
+- Quality of responses may vary
+- The library may stop working if providers change their APIs
+
+Use responsibly and be aware of potential legal and ethical considerations when using unofficial API access methods. 
