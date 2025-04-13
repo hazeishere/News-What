@@ -1,0 +1,9 @@
+# stored articles
+articles.json
+
+# g4f cache
+.g4f_cache
+
+# har and cookies
+har_and_cookies/
+
