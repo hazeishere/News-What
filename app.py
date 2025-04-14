@@ -8,10 +8,13 @@ from urllib.parse import urlparse
 import traceback
 import re
 import g4f
+import random
 
 # Global variables for tracking
 LAST_USED_MODEL = "Unknown"
 AVAILABLE_MODELS = []
+USE_G4F_CLIENT = False
+USE_G4F_LEGACY = False
 
 try:
     from g4f.client import Client
@@ -37,7 +40,7 @@ def get_available_g4f_models():
     models = []
 
     # Add some default models that usually work
-    default_models = ["gemini-2.0-flash", "claude-3.7-sonnet", "gpt-4o-mini"]
+    default_models = ["claude-3.7-sonnet", "gemini-2.0-flash", "gpt-4o-mini"]
     for model in default_models:
         if model not in models:
             models.append(model)
@@ -98,29 +101,36 @@ def crawl_cnn_headlines():
         response.raise_for_status()
         
         soup = BeautifulSoup(response.text, 'html.parser')
-        headlines = []
+        all_headlines = []
         
-        # Get headline articles from CNN homepage
+        # Get headline articles from CNN homepage using span elements
         # Note: CNN's page structure may change, so this selector might need updates
-        for article in soup.select('a[data-link-type="article"]')[:9]:  # Limit to 9 articles
-            headline = article.text.strip()
-            link = article.get('href')
+        for headline_span in soup.select('span.container__headline-text[data-editable="headline"]'):
+            headline = headline_span.text.strip()
+            
+            # Find the closest parent <a> tag to get the link
+            parent_link = headline_span.find_parent('a')
+            link = parent_link.get('href') if parent_link else None
             
             # Handle relative URLs
             if link and not link.startswith(('http://', 'https://')):
                 link = f"https://www.cnn.com{link}"
                 
             # Generate article ID from URL
-            article_id = str(abs(hash(link)))[-10:]
+            article_id = str(abs(hash(link)))[-10:] if link else None
                 
-            if headline and link and not any(a.get('url') == link for a in article_store.articles):
-                headlines.append({
+            if headline and link and article_id and not any(a.get('url') == link for a in article_store.articles):
+                all_headlines.append({
                     'title': headline,
                     'url': link,
                     'id': article_id
                 })
         
-        return headlines
+        # Randomly select up to 9 articles
+        if all_headlines:
+            selected_headlines = random.sample(all_headlines, min(9, len(all_headlines)))
+            return selected_headlines
+        return []
     except Exception as e:
         print(f"Error crawling CNN: {e}")
         return []
